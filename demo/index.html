@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>sfPrototypeMan Demo</title>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="../jquery.sfprototypeman.js"></script>
+		<script type="text/javascript" src="demo_app.js"></script>
+		<style type="text/css">
+			form .sfPrototypeMan {
+				background-color: yellow;
+			}
+
+			form .sfPrototypeMan div * {
+				display: inline-block;
+			}
+
+			form .sfPrototypeMan label {
+				margin-right: 1em;
+			}
+
+			form .sfPrototypeMan + .addPrototype {
+				background-color: green;
+			}
+
+			form .sfPrototypeMan .rmElement {
+				background-color: red;
+			}
+
+		</style>
+	</head>
+	<body>
+		<h1>sfPrototypeMan Demo</h1>
+		<p>
+			Add and remove some animals, observe how sfPrototypeMan maintains the
+			field index (first column) which is used for - most importantly -
+			input names as well.
+		</p>
+		<p>
+			Drag to reorder the fields to show the interaction of sfPrototypeMan
+			with <a href="http://jqueryui.com/sortable/">jQuery UI sortable<a>.
+			It does not rely on it, but they will interact out-of-the-box if
+			used in conjunction.
+		</p>
+		<p>
+			If you use your own DOM modification code it can interact with
+			sfPrototypeMan through callbacks you provide.
+		</p>
+
+		<form>
+			<div>
+				<label>Animals</label>
+				<div data-prototype="&lt;div&gt;&lt;label class=&quot;required&quot;&gt;__name__label__&lt;/label&gt;&lt;div id=&quot;MyFormType_animals___name__&quot;&gt;&lt;div&gt;&lt;label for=&quot;MyFormType_animals___name___name&quot; class=&quot;required&quot;&gt;Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;MyFormType_animals___name___name&quot; name=&quot;MyFormType[animals][__name__][name]&quot; required=&quot;required&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" id="MyFormType_animals">
+					<div>
+						<label class="required">0</label>
+						<div id="MyFormType_animals_0">
+							<div>
+								<label class="required" for="MyFormType_animals_0_name">Name</label>
+								<input type="text" required="required" name="MyFormType[animals][0][name]" id="MyFormType_animals_0_name" value="Lion">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<h2>Source</h2>
+		<iframe src="demo_app.js" style="width: 100%">
+	</body>
+</html>

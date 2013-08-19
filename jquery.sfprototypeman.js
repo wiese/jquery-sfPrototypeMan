@@ -101,7 +101,7 @@
 		 * @return {String}
 		 */
 		_getText: function(txt, data) {
-			if (jQuery.type(data) == "object") {
+			if ($.isPlainObject(data)) {
 				$.each(data, function(variable, value) {
 					txt = txt.replace("%%" + variable + "%%", value);
 				});

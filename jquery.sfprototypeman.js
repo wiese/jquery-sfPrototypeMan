@@ -40,10 +40,10 @@
 		this._config = config;
 
 		if (!this._container.jquery || this._container.length != 1) {
-			throw 'Container has to be _one_ jQuery extended element';
+			throw "Container has to be _one_ jQuery extended element";
 		}
 		if (!this._container.data(this._config.prototypeDataKey)) {
-			throw 'Container lacks configured prototype data key';
+			throw "Container lacks configured prototype data key";
 		}
 	};
 
@@ -89,11 +89,11 @@
 		},
 
 		/**
-		 * Get txt with %%variables%% replaced by { 'varibles': 'data object' }
+		 * Get txt with %%variables%% replaced by { "varibles": "data object" }
 		 *
 		 * @todo Potentially move into config as anonymous function
 		 *
-		 * @example _getText('%%a%% hive', { a: 'bee' }) // yields 'bee hive'
+		 * @example _getText("%%a%% hive", { a: "bee" }) // yields "bee hive"
 		 *
 		 * @param {String} txt  A template string
 		 * @param {Object} data A key-value object what to replace (by key) in txt
@@ -101,9 +101,9 @@
 		 * @return {String}
 		 */
 		_getText: function(txt, data) {
-			if (typeof data == 'object') {
+			if (jQuery.type(data) == "object") {
 				$.each(data, function(variable, value) {
-					txt = txt.replace('%%' + variable + '%%', value);
+					txt = txt.replace("%%" + variable + "%%", value);
 				});
 			}
 			return txt;
@@ -132,7 +132,7 @@
 		 */
 		_addAddButton: function() {
 			var addMe = $(this._config.addButtonMarkup);
-			var containerId = this._container.attr('id');
+			var containerId = this._container.attr("id");
 			addMe.html(this._getText(this._config.addButtonText, { field: containerId }));
 			addMe.click($.proxy(this._addButtonCallback, this));
 			addMe.insertAfter(this._container);
@@ -140,7 +140,7 @@
 		},
 
 		/**
-		 * The callback performed when the 'add button' is triggered
+		 * The callback performed when the "add button" is triggered
 		 *
 		 * @param {jQuery.Event} event The jQuery event
 		 *
@@ -153,7 +153,7 @@
 			var newElement = this._createField(counter);
 			newElement.appendTo(this._container);
 
-			this._container.trigger('prototype.added', [this]);
+			this._container.trigger("prototype.added", [this]);
 		},
 
 		/**
@@ -219,7 +219,7 @@
 				this._reindexFields();
 			}
 
-			this._container.trigger('prototype.elementremoved', [this]);
+			this._container.trigger("prototype.elementremoved", [this]);
 		},
 
 		/**
@@ -267,20 +267,20 @@
 	};
 
 	$.fn.sfPrototypeMan.defaultOptions = {
-		prototypeDataKey: 'prototype',
-		containerSelector: 'form *[data-prototype]',
-		containerClass: 'sfPrototypeMan',
+		prototypeDataKey: "prototype",
+		containerSelector: "form *[data-prototype]",
+		containerClass: "sfPrototypeMan",
 		fieldLabelPattern: /__name__label__/g,
 		fieldNamePattern: /__name__/g,	// Symfony's "protoype_name"
-		allInputsSelector: ':input',
-		addButtonMarkup: '<a href="#" class="addPrototype" />',
-		addButtonText: 'Add a %%field%%',
-		rmButtonMarkup: '<a href="#" class="rmElement" />',
-		rmButtonText: 'Remove entry',
+		allInputsSelector: ":input",
+		addButtonMarkup: "<a href='#' class='addPrototype' />",
+		addButtonText: "Add a %%field%%",
+		rmButtonMarkup: "<a href='#' class='rmElement' />",
+		rmButtonText: "Remove entry",
 		/**
 		 * Callbacks that will be attached to each individual container
 		 *
-		 * @tutorial Expects jQuery event object as first parameter
+		 * @tutorial Expects {jQuery.Event} as first parameter
 		 * @tutorial The container object is bound to be 'this'
 		 */
 		containerListeners: {
@@ -288,7 +288,7 @@
 			 * jQuery UI Sortable Widget reorder callback - post DOM position change
 			 * @see http://api.jqueryui.com/sortable/#event-update
 			 */
-			'sortupdate': function(event, ui) {
+			"sortupdate": function(event, ui) {
 				this.orderChanged();
 			}
 		}

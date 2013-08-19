@@ -1,3 +1,5 @@
+var lifecycle = {};
+
 /**
  * @param string name
  *
@@ -48,7 +50,7 @@ function assertType(variable, type, message) {
 	return equal(jQuery.type(variable), type, message);
 }
 
-module('Plugin');
+module('Plugin', lifecycle);
 
 test('plugged in', 1, function () {
 	assertType(jQuery.fn.sfPrototypeMan, 'function');
@@ -70,7 +72,7 @@ test('default options set', 12, function () {
 	assertType(defaultOptions.containerListeners, 'object');
 });
 
-module('Manager');
+module('Manager', lifecycle);
 
 test('no matches w/o proper dom', 1, function() {
 	var man = new $.fn.sfPrototypeMan.classes.SfPrototypeMan(document, $.fn.sfPrototypeMan.defaultOptions);
@@ -90,75 +92,133 @@ test('getting containers', 6, function() {
 	equal(jQuery(containers[1].getDomElement()).attr('id'), 'NotherFormType_plants');
 });
 
-module('Container');
+module('Container', lifecycle);
 
-test('add class', 1, function() {
+test('add class', 2, function() {
 	var dom = jQuery(getFixture('formAnimals'));
 	var containerDom = jQuery('*[data-prototype]', dom);
 	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
-	ok(jQuery(container.getDomElement()).hasClass('sfPrototypeMan'));
+	equal(jQuery(container.getDomElement()).hasClass('sfPrototypeMan'), false);
+	container._extendContainer();
+	equal(jQuery(container.getDomElement()).hasClass('sfPrototypeMan'), true);
 });
 
-test('extended dom', 5, function() {
+test('prototype instances', 1, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+	deepEqual(container._getExisting().toArray(), jQuery('> *', containerDom).toArray());
+});
+
+test('get container content', 1, function() {
 	var dom = jQuery(getFixture('formAnimals'));
 	var containerDom = jQuery('*[data-prototype]', dom);
 	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
 
 	var children = jQuery(container.getDomElement()).children();
+	deepEqual(container._getExisting().toArray(), children.toArray());
+});
+
+test('rm button added', 5, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+
+	var children = container._getExisting();
 	equal(children.length, 1);
 
+	equal(jQuery('> a.rmElement', children[0]).length, 0);
+	container._extendFields();
 	var rmButtons = jQuery('> a.rmElement', children[0]);
 	equal(rmButtons.length, 1);
-	equal(jQuery._data(rmButtons[0], 'events')['click'].length, 1);
+	var callbacks = jQuery._data(rmButtons[0], 'events')['click'];
+	equal(callbacks.length, 1);
 
+	jQuery(rmButtons[0]).trigger('click');
+
+	equal(container._getExisting().length, 0);
+});
+
+test('add button added', 6, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+
+	var children = container._getExisting();
+	equal(children.length, 1);
+
+	equal(jQuery('#MyFormType_animals + a.addPrototype', dom).length, 0);
+	var button = container._addAddButton();
 	var addButtons = jQuery('#MyFormType_animals + a.addPrototype', dom);
 	equal(addButtons.length, 1);
-	equal(jQuery._data(addButtons[0], 'events')['click'].length, 1);
+
+	equal(button, addButtons[0]);
+	var callbacks = jQuery._data(button, 'events')['click'];
+	equal(callbacks.length, 1);
+
+	jQuery(button).trigger('click');
+
+	equal(container._getExisting().length, 2);
 });
 
-/*
-var lifecycle = {
-	teardown: function () {
-		$.cookie.defaults = {};
-		delete $.cookie.raw;
-		delete $.cookie.json;
-		$.each($.cookie(), $.removeCookie);
-	}};
+test('existing elements look "like" prototype generated ones', 2, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+	container._extendFields();
+	var button = container._addAddButton();
 
+	equal(container._getExisting().length, 1);
 
-module('read', lifecycle);
+	jQuery(button).trigger('click');
 
-asyncTest('malformed cookie value in IE (#88, #117)', function() {
-	expect(1);
-	// Sandbox in an iframe so that we can poke around with document.cookie.
-	var iframe = $('<iframe src="malformed_cookie.html"></iframe>')[0];
-	$(iframe).on('load', function() {
+	var existingAfter = container._getExisting().toArray();
+	equal(existingAfter.length, 2);
+
+	// @todo compare elements except for id, label, field name, ...
+	//deepEqual(existingAfter[0], existingAfter[1]);
+});
+
+test('add click emits event', 1, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+	var button = container._addAddButton();
+
+	jQuery(container._container).on('prototype.added', function(event, cont) {
+		equal(cont, container);
 		start();
-		if (iframe.contentWindow.ok) {
-			strictEqual(iframe.contentWindow.testValue, 'two', 'reads all cookie values, skipping duplicate occurences of "; "');
-		} else {
-			// Skip the test where we can't stub document.cookie using
-			// Object.defineProperty. Seems to work fine in
-			// Chrome, Firefox and IE 8+.
-			ok(true, 'N/A');
-		}
 	});
-	document.body.appendChild(iframe);
+
+	jQuery(button).trigger('click');
 });
 
-test('call without arguments', function() {
-	$.cookie('c', 'v');
-	$.cookie('foo', 'bar');
-	deepEqual($.cookie(), {
-		c: 'v',
-		foo: 'bar'
-	}, 'should return all cookies');
-	$.each($.cookie(), $.removeCookie);
+test('rm click emits event', 1, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+	container._extendFields();
 
-	$.cookie.json = true;
-	$.cookie('c', { foo: 'bar' });
-	deepEqual($.cookie(), {
-		c: { foo: 'bar' }
-	}, 'returns all cookies with JSON parsed');
+	var rmButton = jQuery('> a.rmElement', container._getExisting())[0];
+
+	jQuery(container._container).on('prototype.elementremoved', function(event, cont) {
+		equal(cont, container);
+	});
+
+	jQuery(rmButton).trigger('click');
 });
-*/
+
+test('listeners attached to container', 1, function() {
+	var dom = jQuery(getFixture('formAnimals'));
+	var containerDom = jQuery('*[data-prototype]', dom);
+	var options = $.fn.sfPrototypeMan.defaultOptions;
+
+	options.containerListeners['loremipsum'] = function() {
+		equal(this, container);
+	};
+
+	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, options);
+	container._extendContainer();
+
+	jQuery(container._container).trigger('loremipsum');
+});

@@ -1,6 +1,8 @@
 /**
  * jQuery sfPrototypeMan Plugin
  *
+ * Released under the MIT license
+ *
  * @see https://github.com/wiese/jquery-sfPrototypeMan
  */
 (function($, document) {
@@ -91,7 +93,7 @@
 		/**
 		 * Get txt with %%variables%% replaced by { "varibles": "data object" }
 		 *
-		 * @todo Potentially move into config as anonymous function
+		 * @todo Potentially move into config as anonymous/changeable function
 		 *
 		 * @example _getText("%%a%% hive", { a: "bee" }) // yields "bee hive"
 		 *

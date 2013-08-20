@@ -14,7 +14,7 @@
 		context = $(context);
 
 		// is the given context usable?
-		if(context.length == 0) {
+		if(context.length === 0) {
 			context = document;
 		}
 
@@ -41,7 +41,7 @@
 		this._container = container;
 		this._config = config;
 
-		if (!this._container.jquery || this._container.length != 1) {
+		if (!this._container.jquery || this._container.length !== 1) {
 			throw "Container has to be _one_ jQuery extended element";
 		}
 		if (!this._container.data(this._config.prototypeDataKey)) {

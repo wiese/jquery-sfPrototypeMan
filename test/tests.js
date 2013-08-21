@@ -7,170 +7,170 @@ var lifecycle = {};
  */
 function getFixture(name) {
 	var fixtures = {
-		'animals':
-			'<div>'+
-				'<label>Animals</label>'+
-				'<div data-prototype="&lt;div&gt;&lt;label class=&quot;required&quot;&gt;__name__label__&lt;/label&gt;&lt;div id=&quot;MyFormType_animals___name__&quot;&gt;&lt;div&gt;&lt;label for=&quot;MyFormType_animals___name___name&quot; class=&quot;required&quot;&gt;Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;MyFormType_animals___name___name&quot; name=&quot;MyFormType[animals][__name__][name]&quot; required=&quot;required&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" id="MyFormType_animals">'+
-					'<div>'+
-						'<label class="required">0</label>'+
-						'<div id="MyFormType_animals_0">'+
-							'<div>'+
-								'<label class="required" for="MyFormType_animals_0_name">Name</label>'+
-								'<input type="text" required="required" name="MyFormType[animals][0][name]" id="MyFormType_animals_0_name" value="Lion">'+
-							'</div>'+
-						'</div>'+
-					'</div>'+
-				'</div>'+
-			'</div>',
-		'plants':
-			'<div>'+
-				'<label>Plants</label>'+
-				'<div data-prototype="&lt;div&gt;&lt;label class=&quot;required&quot;&gt;__name__label__&lt;/label&gt;&lt;div id=&quot;NotherFormType_plants___name__&quot;&gt;&lt;div&gt;&lt;label for=&quot;NotherFormType_plants___name___name&quot; class=&quot;required&quot;&gt;Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;NotherFormType_plants___name___name&quot; name=&quot;NotherFormType[plants][__name__][name]&quot; required=&quot;required&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" id="NotherFormType_plants">'+
-					'<div>'+
-						'<label class="required">0</label>'+
-						'<div id="NotherFormType_plants_0">'+
-							'<div>'+
-								'<label class="required" for="NotherFormType_plants_0_name">Name</label>'+
-								'<input type="text" required="required" name="NotherFormType[plants][0][name]" id="NotherFormType_plants_0_name" value="Lion">'+
-							'</div>'+
-						'</div>'+
-					'</div>'+
-				'</div>'+
-			'</div>'
+		"animals":
+			"<div>"+
+				"<label>Animals</label>"+
+				"<div data-prototype='&lt;div&gt;&lt;label class=&quot;required&quot;&gt;__name__label__&lt;/label&gt;&lt;div id=&quot;MyFormType_animals___name__&quot;&gt;&lt;div&gt;&lt;label for=&quot;MyFormType_animals___name___name&quot; class=&quot;required&quot;&gt;Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;MyFormType_animals___name___name&quot; name=&quot;MyFormType[animals][__name__][name]&quot; required=&quot;required&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;' id='MyFormType_animals'>"+
+					"<div>"+
+						"<label class='required'>0</label>"+
+						"<div id='MyFormType_animals_0'>"+
+							"<div>"+
+								"<label class='required' for='MyFormType_animals_0_name'>Name</label>"+
+								"<input type='text' required='required' name='MyFormType[animals][0][name]' id='MyFormType_animals_0_name' value='Lion'>"+
+							"</div>"+
+						"</div>"+
+					"</div>"+
+				"</div>"+
+			"</div>",
+		"plants":
+			"<div>"+
+				"<label>Plants</label>"+
+				"<div data-prototype='&lt;div&gt;&lt;label class=&quot;required&quot;&gt;__name__label__&lt;/label&gt;&lt;div id=&quot;NotherFormType_plants___name__&quot;&gt;&lt;div&gt;&lt;label for=&quot;NotherFormType_plants___name___name&quot; class=&quot;required&quot;&gt;Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;NotherFormType_plants___name___name&quot; name=&quot;NotherFormType[plants][__name__][name]&quot; required=&quot;required&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;' id='NotherFormType_plants'>"+
+					"<div>"+
+						"<label class='required'>0</label>"+
+						"<div id='NotherFormType_plants_0'>"+
+							"<div>"+
+								"<label class='required' for='NotherFormType_plants_0_name'>Name</label>"+
+								"<input type='text' required='required' name='NotherFormType[plants][0][name]' id='NotherFormType_plants_0_name' value='Daisy'>"+
+							"</div>"+
+						"</div>"+
+					"</div>"+
+				"</div>"+
+			"</div>"
 	};
-	fixtures['formAnimals'] = '<form>'+fixtures['animals']+'</form>';
-	fixtures['formPlants'] = '<form>'+fixtures['plants']+'</form>';
-	fixtures['twoOneForm'] = '<form>'+fixtures['animals']+fixtures['plants']+'</form>';
-	fixtures['twoTwoForms'] = '<form>'+fixtures['animals']+'</form><form>'+fixtures['plants']+'</form>';
-	var html = '<div>' + fixtures[name] + '</div>';	// incl a root element
-	return jQuery.parseHTML(html)[0];
+	fixtures.formAnimals = "<form>" + fixtures.animals + "</form>";
+	fixtures.formPlants = "<form>" + fixtures.plants + "</form>";
+	fixtures.twoOneForm = "<form>" + fixtures.animals + fixtures.plants + "</form>";
+	fixtures.twoTwoForms = "<form>" + fixtures.animals + "</form><form>" + fixtures.plants + "</form>";
+	// wrapping fixtures in a joined root element to simulate living in <body>
+	return jQuery.parseHTML("<div>" + fixtures[name] + "</div>")[0];
 }
 
 function assertType(variable, type, message) {
 	return equal(jQuery.type(variable), type, message);
 }
 
-module('Plugin', lifecycle);
+module("Plugin", lifecycle);
 
-test('plugged in', 1, function () {
-	assertType(jQuery.fn.sfPrototypeMan, 'function');
+test("plugged in", 1, function () {
+	assertType(jQuery.fn.sfPrototypeMan, "function");
 });
 
-test('default options set', 12, function () {
+test("default options set", 12, function () {
 	var defaultOptions = jQuery.fn.sfPrototypeMan.defaultOptions;
-	assertType(defaultOptions, 'object');
-	assertType(defaultOptions.prototypeDataKey, 'string');
-	assertType(defaultOptions.containerSelector, 'string');
-	assertType(defaultOptions.containerClass, 'string');
-	assertType(defaultOptions.fieldLabelPattern, 'regexp');
-	assertType(defaultOptions.fieldNamePattern, 'regexp');
-	assertType(defaultOptions.allInputsSelector, 'string');
-	assertType(defaultOptions.addButtonMarkup, 'string');
-	assertType(defaultOptions.addButtonText, 'string');
-	assertType(defaultOptions.rmButtonMarkup, 'string');
-	assertType(defaultOptions.rmButtonText, 'string');
-	assertType(defaultOptions.containerListeners, 'object');
+	assertType(defaultOptions, "object");
+	assertType(defaultOptions.prototypeDataKey, "string");
+	assertType(defaultOptions.containerSelector, "string");
+	assertType(defaultOptions.containerClass, "string");
+	assertType(defaultOptions.fieldLabelPattern, "regexp");
+	assertType(defaultOptions.fieldNamePattern, "regexp");
+	assertType(defaultOptions.allInputsSelector, "string");
+	assertType(defaultOptions.addButtonMarkup, "string");
+	assertType(defaultOptions.addButtonText, "string");
+	assertType(defaultOptions.rmButtonMarkup, "string");
+	assertType(defaultOptions.rmButtonText, "string");
+	assertType(defaultOptions.containerListeners, "object");
 });
 
-module('Manager', lifecycle);
+module("Manager", lifecycle);
 
-test('no matches w/o proper dom', 1, function() {
-	var man = new $.fn.sfPrototypeMan.classes.SfPrototypeMan(document, $.fn.sfPrototypeMan.defaultOptions);
-	equal(man.getContainers().length, 0, 'nothing in test (qunit) dom');
+test("no matches w/o proper dom", 1, function() {
+	var man = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeMan(document, jQuery.fn.sfPrototypeMan.defaultOptions);
+	equal(man.getContainers().length, 0, "nothing in test (qunit) dom");
 });
 
 // @todo fixture of defaultOptions
-test('getting containers', 6, function() {
-	var dom = getFixture('twoOneForm');
-	var man = new $.fn.sfPrototypeMan.classes.SfPrototypeMan(dom, $.fn.sfPrototypeMan.defaultOptions);
-	var containers = man.getContainers();
-	assertType(containers, 'array');
+test("getting containers", 6, function() {
+	var dom = getFixture("twoOneForm"),
+		man = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeMan(dom, jQuery.fn.sfPrototypeMan.defaultOptions),
+		containers = man.getContainers();
+	assertType(containers, "array");
 	equal(containers.length, 2);
-	equal(containers[0].getDomElement(), jQuery('form *[data-prototype]', dom)[0]);
-	equal(containers[1].getDomElement(), jQuery('form *[data-prototype]', dom)[1]);
-	equal(jQuery(containers[0].getDomElement()).attr('id'), 'MyFormType_animals');
-	equal(jQuery(containers[1].getDomElement()).attr('id'), 'NotherFormType_plants');
+	equal(containers[0].getDomElement(), jQuery("form *[data-prototype]", dom)[0]);
+	equal(containers[1].getDomElement(), jQuery("form *[data-prototype]", dom)[1]);
+	equal(jQuery(containers[0].getDomElement()).attr("id"), "MyFormType_animals");
+	equal(jQuery(containers[1].getDomElement()).attr("id"), "NotherFormType_plants");
 });
 
-module('Container', lifecycle);
+module("Container", lifecycle);
 
-test('add class', 2, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
-	equal(jQuery(container.getDomElement()).hasClass('sfPrototypeMan'), false);
+test("add class", 2, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
+	equal(jQuery(container.getDomElement()).hasClass("sfPrototypeMan"), false);
 	container._extendContainer();
-	equal(jQuery(container.getDomElement()).hasClass('sfPrototypeMan'), true);
+	equal(jQuery(container.getDomElement()).hasClass("sfPrototypeMan"), true);
 });
 
-test('prototype instances', 1, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
-	deepEqual(container._getExisting().toArray(), jQuery('> *', containerDom).toArray());
+test("prototype instances", 1, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
+	deepEqual(container._getExisting().toArray(), jQuery("> *", containerDom).toArray());
 });
 
-test('get container content', 1, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
-
-	var children = jQuery(container.getDomElement()).children();
+test("get container content", 1, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
+		children = jQuery(container.getDomElement()).children();
 	deepEqual(container._getExisting().toArray(), children.toArray());
 });
 
-test('rm button added', 5, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+test("rm button added", 5, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
+		children = container._getExisting();
 
-	var children = container._getExisting();
 	equal(children.length, 1);
 
-	equal(jQuery('> a.rmElement', children[0]).length, 0);
+	equal(jQuery("> a.rmElement", children[0]).length, 0);
 	container._extendFields();
-	var rmButtons = jQuery('> a.rmElement', children[0]);
+	var rmButtons = jQuery("> a.rmElement", children[0]);
 	equal(rmButtons.length, 1);
-	var callbacks = jQuery._data(rmButtons[0], 'events')['click'];
+	var callbacks = jQuery._data(rmButtons[0], "events")["click"];
 	equal(callbacks.length, 1);
 
-	jQuery(rmButtons[0]).trigger('click');
+	jQuery(rmButtons[0]).trigger("click");
 
 	equal(container._getExisting().length, 0);
 });
 
-test('add button added', 6, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+test("add button added", 6, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
+		children = container._getExisting();
 
-	var children = container._getExisting();
 	equal(children.length, 1);
 
-	equal(jQuery('#MyFormType_animals + a.addPrototype', dom).length, 0);
+	equal(jQuery("#MyFormType_animals + a.addPrototype", dom).length, 0);
 	var button = container._addAddButton();
-	var addButtons = jQuery('#MyFormType_animals + a.addPrototype', dom);
+	var addButtons = jQuery("#MyFormType_animals + a.addPrototype", dom);
 	equal(addButtons.length, 1);
 
 	equal(button, addButtons[0]);
-	var callbacks = jQuery._data(button, 'events')['click'];
+	var callbacks = jQuery._data(button, "events")["click"];
 	equal(callbacks.length, 1);
 
-	jQuery(button).trigger('click');
+	jQuery(button).trigger("click");
 
 	equal(container._getExisting().length, 2);
 });
 
-test('existing elements look "like" prototype generated ones', 2, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+test("existing elements look like prototype generated ones", 2, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
+
 	container._extendFields();
 	var button = container._addAddButton();
 
 	equal(container._getExisting().length, 1);
 
-	jQuery(button).trigger('click');
+	jQuery(button).trigger("click");
 
 	var existingAfter = container._getExisting().toArray();
 	equal(existingAfter.length, 2);
@@ -179,46 +179,47 @@ test('existing elements look "like" prototype generated ones', 2, function() {
 	//deepEqual(existingAfter[0], existingAfter[1]);
 });
 
-test('add click emits event', 1, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
-	var button = container._addAddButton();
+test("add click emits event", 1, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
+		button = container._addAddButton();
 
-	jQuery(container._container).on('prototype.added', function(event, cont) {
+	jQuery(container._container).on("prototype.added", function(event, cont) {
 		equal(cont, container);
 		start();
 	});
 
-	jQuery(button).trigger('click');
+	jQuery(button).trigger("click");
 });
 
-test('rm click emits event', 1, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, $.fn.sfPrototypeMan.defaultOptions);
+test("rm click emits event", 1, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
+
 	container._extendFields();
 
-	var rmButton = jQuery('> a.rmElement', container._getExisting())[0];
+	var rmButton = jQuery("> a.rmElement", container._getExisting())[0];
 
-	jQuery(container._container).on('prototype.elementremoved', function(event, cont) {
+	jQuery(container._container).on("prototype.elementremoved", function(event, cont) {
 		equal(cont, container);
 	});
 
-	jQuery(rmButton).trigger('click');
+	jQuery(rmButton).trigger("click");
 });
 
-test('listeners attached to container', 1, function() {
-	var dom = jQuery(getFixture('formAnimals'));
-	var containerDom = jQuery('*[data-prototype]', dom);
-	var options = $.fn.sfPrototypeMan.defaultOptions;
+test("listeners attached to container", 1, function() {
+	var dom = jQuery(getFixture("formAnimals")),
+		containerDom = jQuery("*[data-prototype]", dom),
+		options = jQuery.fn.sfPrototypeMan.defaultOptions;
 
-	options.containerListeners['loremipsum'] = function() {
+	options.containerListeners["loremipsum"] = function() {
 		equal(this, container);
 	};
 
-	var container = new $.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, options);
+	var container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, options);
 	container._extendContainer();
 
-	jQuery(container._container).trigger('loremipsum');
+	jQuery(container._container).trigger("loremipsum");
 });

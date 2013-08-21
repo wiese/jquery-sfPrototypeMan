@@ -6,11 +6,13 @@
  * @see https://github.com/wiese/jquery-sfPrototypeMan
  */
 (function($, document) {
+	var SfPrototypeMan, SfPrototypeContainer;
+
 	/**
 	 * @param {jQuery} context
 	 * @param {Object} settings
 	 */
-	var SfPrototypeMan = function(context, settings) {
+	SfPrototypeMan = function(context, settings) {
 		context = $(context);
 
 		// is the given context usable?
@@ -18,9 +20,8 @@
 			context = document;
 		}
 
-		var config = $.extend({}, $.fn.sfPrototypeMan.defaultOptions, settings);
-
-		var containers = [];
+		var config = $.extend({}, $.fn.sfPrototypeMan.defaultOptions, settings),
+			containers = [];
 
 		this.getContainers = function() {
 			return containers;
@@ -37,7 +38,7 @@
 	 * @param {jQuery} container jQuery extended dom element to be used
 	 * @param {Object} config    Configuration value object
 	 */
-	var SfPrototypeContainer = function(container, config) {
+	SfPrototypeContainer = function(container, config) {
 		this._container = container;
 		this._config = config;
 
@@ -133,8 +134,8 @@
 		 * @return HTMLElement The button object
 		 */
 		_addAddButton: function() {
-			var addMe = $(this._config.addButtonMarkup);
-			var containerId = this._container.attr("id");
+			var	addMe = $(this._config.addButtonMarkup),
+				containerId = this._container.attr("id");
 			addMe.html(this._getText(this._config.addButtonText, { field: containerId }));
 			addMe.click($.proxy(this._addButtonCallback, this));
 			addMe.insertAfter(this._container);
@@ -151,8 +152,8 @@
 		_addButtonCallback: function(event) {
 			event.preventDefault();
 
-			var counter = this._getExisting().length;
-			var newElement = this._createField(counter);
+			var counter = this._getExisting().length,
+				newElement = this._createField(counter);
 			newElement.appendTo(this._container);
 
 			this._container.trigger("prototype.added", [this]);
@@ -183,8 +184,8 @@
 		 * @return {jQuery}
 		 */
 		_createField: function(position) {
-			var html = this._getFieldHtml(position);
-			var field = $($.parseHTML(html));
+			var html = this._getFieldHtml(position),
+				field = $($.parseHTML(html));
 			this._extendField(field);
 			return field;
 		},
@@ -210,10 +211,9 @@
 		_rmButtonCallback: function(event) {
 			event.preventDefault();
 
-			var field = $(event.delegateTarget).parent();
-
-			// rm last field doesn't change order - save some performance
-			var doReindex =! this._getExisting().last().is(field);
+			var field = $(event.delegateTarget).parent(),
+				// rm last field doesn't change order - save some performance
+				doReindex =! this._getExisting().last().is(field);
 
 			field.remove();
 
@@ -250,12 +250,14 @@
 				field = $(field);
 
 				// collecting data currently present inside field
-				var data = $(this._config.allInputsSelector, field).serializeArray();
-
-				var newField = this._createField(index);
-				// we trust that order of inputs will be identical every time
-				// field names can not be relied on as they contain the index we change
-				$(this._config.allInputsSelector, newField).val(function(j, value) {
+				var data = $(this._config.allInputsSelector, field).serializeArray(),
+					newField = this._createField(index);
+				/**
+				 * We trust that order of inputs will be identical every time
+				 * field names can not be relied on as they contain the index we change
+				 * @tutorial Omitting callback's 'value' parameter we don't use
+				 */
+				$(this._config.allInputsSelector, newField).val(function(j) {
 					return data[j].value;
 				});
 
@@ -288,9 +290,10 @@
 		containerListeners: {
 			/**
 			 * jQuery UI Sortable Widget reorder callback - post DOM position change
+			 * @tutorial We omit the parameters 'event'&'ui' as we don't use them
 			 * @see http://api.jqueryui.com/sortable/#event-update
 			 */
-			"sortupdate": function(event, ui) {
+			"sortupdate": function() {
 				this.orderChanged();
 			}
 		}

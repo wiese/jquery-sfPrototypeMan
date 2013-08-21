@@ -1,0 +1,41 @@
+{
+	"name": "jquery-sfprototypeman",
+	"title": "jQuery sfPrototypeMan",
+	"description": "A jQuery plugin extending Symfony 2 generated 'allow_add' HTML(5) forms.",
+	"homepage": "https://github.com/wiese/jquery-sfPrototypeMan/",
+	"bugs": "https://github.com/wiese/jquery-sfPrototypeMan/issues",
+	"version": "0.1.0",
+	"main": "Gruntfile.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "grunt"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/wiese/jquery-sfPrototypeMan.git"
+	},
+	"author": {
+		"name": "wiese",
+		"url": "https://github.com/wiese/"
+	},
+	"readmeFilename": "README.md",
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/wiese/jquery-sfPrototypeMan/MIT-LICENSE.txt"
+		}
+	],
+	"devDependencies": {
+		"grunt": "~0.4.0",
+		"grunt-contrib-jshint": "~0.4.0",
+		"grunt-contrib-uglify": "~0.2.0",
+		"grunt-contrib-qunit": "~0.2.0",
+		"grunt-contrib-watch": "~0.3.0",
+		"grunt-compare-size": "~0.4.0",
+		"grunt-cli": "0.1.9",
+		"gzip-js": "~0.3.0"
+	},
+	"keywords": ["Symfony", "Form", "jQuery", "plugin"]
+}

@@ -1,5 +1,3 @@
-var lifecycle = {};
-
 /**
  * @param string name
  *
@@ -50,7 +48,7 @@ function assertType(variable, type, message) {
 	return equal(jQuery.type(variable), type, message);
 }
 
-module("Plugin", lifecycle);
+module("Plugin");
 
 test("plugged in", 1, function () {
 	assertType(jQuery.fn.sfPrototypeMan, "function");
@@ -72,7 +70,7 @@ test("default options set", 12, function () {
 	assertType(defaultOptions.containerListeners, "object");
 });
 
-module("Manager", lifecycle);
+module("Manager");
 
 test("no matches w/o proper dom", 1, function() {
 	var man = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeMan(document, jQuery.fn.sfPrototypeMan.defaultOptions);
@@ -92,7 +90,7 @@ test("getting containers", 6, function() {
 	equal(jQuery(containers[1].getDomElement()).attr("id"), "NotherFormType_plants");
 });
 
-module("Container", lifecycle);
+module("Container");
 
 test("add class", 2, function() {
 	var dom = jQuery(getFixture("formAnimals")),

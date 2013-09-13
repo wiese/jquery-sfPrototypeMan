@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	jQuery().sfPrototypeMan();
 
-	// sfPrototypeMan does not depend on jQuery UI sortable
+	// If you choose to run jQuery UI sortable, sfPrototypeMan will interact with it
 	jQuery("#MyFormType_animals").sortable();
 });

@@ -50,11 +50,11 @@ function assertType(variable, type, message) {
 
 module("Plugin");
 
-test("plugged in", 1, function () {
+QUnit.test("plugged in", 1, function () {
 	assertType(jQuery.fn.sfPrototypeMan, "function");
 });
 
-test("default options set", 12, function () {
+QUnit.test("default options set", 12, function () {
 	var defaultOptions = jQuery.fn.sfPrototypeMan.defaultOptions;
 	assertType(defaultOptions, "object");
 	assertType(defaultOptions.prototypeDataKey, "string");
@@ -72,13 +72,13 @@ test("default options set", 12, function () {
 
 module("Manager");
 
-test("no matches w/o proper dom", 1, function() {
+QUnit.test("no matches w/o proper dom", 1, function() {
 	var man = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeMan(document, jQuery.fn.sfPrototypeMan.defaultOptions);
 	equal(man.getContainers().length, 0, "nothing in test (qunit) dom");
 });
 
 // @todo fixture of defaultOptions
-test("getting containers", 6, function() {
+QUnit.test("getting containers", 6, function() {
 	var dom = getFixture("twoOneForm"),
 		man = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeMan(dom, jQuery.fn.sfPrototypeMan.defaultOptions),
 		containers = man.getContainers();
@@ -92,123 +92,146 @@ test("getting containers", 6, function() {
 
 module("Container");
 
-test("add class", 2, function() {
-	var dom = jQuery(getFixture("formAnimals")),
+QUnit.test("container extension (kinda integration test)", 4, function() {
+	var dom = getFixture("formAnimals"),
 		containerDom = jQuery("*[data-prototype]", dom),
 		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
 	equal(jQuery(container.getDomElement()).hasClass("sfPrototypeMan"), false);
+	equal(jQuery._data(container.getDomElement(), "events"), undefined);
 	container._extendContainer();
 	equal(jQuery(container.getDomElement()).hasClass("sfPrototypeMan"), true);
+	var callbacks = jQuery._data(container.getDomElement(), "events");
+	equal(callbacks.sortupdate[0].origType, "sortupdate");
+	// @todo check addButton added
 });
 
-test("prototype instances", 1, function() {
-	var dom = jQuery(getFixture("formAnimals")),
-		containerDom = jQuery("*[data-prototype]", dom),
-		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
-	deepEqual(container._getExisting().toArray(), jQuery("> *", containerDom).toArray());
-});
-
-test("get container content", 1, function() {
-	var dom = jQuery(getFixture("formAnimals")),
+QUnit.test("get container content (existing 'fields')", 1, function() {
+	var dom = getFixture("formAnimals"),
 		containerDom = jQuery("*[data-prototype]", dom),
 		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
 		children = jQuery(container.getDomElement()).children();
 	deepEqual(container._getExisting().toArray(), children.toArray());
 });
 
-test("rm button added", 5, function() {
-	var dom = jQuery(getFixture("formAnimals")),
+QUnit.test("rm button added", 6, function() {
+	var dom = getFixture("formAnimals"),
 		containerDom = jQuery("*[data-prototype]", dom),
 		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
 		children = container._getExisting();
 
 	equal(children.length, 1);
 
-	equal(jQuery("> a.rmElement", children[0]).length, 0);
+	equal(jQuery("> a.rmElement", children[0]).length, 0, "at first there is no button");
 	container._extendFields();
 	var rmButtons = jQuery("> a.rmElement", children[0]);
-	equal(rmButtons.length, 1);
-	var callbacks = jQuery._data(rmButtons[0], "events")["click"];
-	equal(callbacks.length, 1);
+	equal(rmButtons.length, 1, "exactly one button was added");
+	equal(jQuery._data(rmButtons[0], "events")["click"].length, 1);
+
+	jQuery(container._container).on("prototype.elementremoved", function(event, cont) {
+		equal(cont, container, "container passed to rm callback & called");
+	});
 
 	jQuery(rmButtons[0]).trigger("click");
 
-	equal(container._getExisting().length, 0);
+	equal(container._getExisting().length, 0, "number of fields decreased");
 });
 
-test("add button added", 6, function() {
-	var dom = jQuery(getFixture("formAnimals")),
-		containerDom = jQuery("*[data-prototype]", dom),
-		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
-		children = container._getExisting();
+/**
+ * @tutorial Has a 0 _local_ 'expected' count, sub-methods increment for themselves
+ */
+QUnit.test("reindexing after rm (very much integration)", 0, function() {
+	var dom = getFixture("formPlants"),
+	containerDom = jQuery("*[data-prototype]", dom),
+	container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
+	testnames = {
+		// 0: "Daisy",	// already in dom from fixture
+		1: "Sunflower",
+		2: "Strawberry",
+		3: "Barley",
+		4: "Pine"
+	},
+	//replacement result (tested here) as per both options and fixture prototype
+	assertStruct = function (field, position, value) {
+		QUnit.config.current.expected += 5;	// 5 assertions in here
+		equal(jQuery("> label", field).html(), position, "form label");
+		equal(jQuery("> div", field).attr("id"), "NotherFormType_plants_" + position);
+		var input = jQuery(jQuery(":input", field)[0]);
+		equal(input.attr("id"), "NotherFormType_plants_" + position + "_name", "input id");
+		equal(input.attr("name"), "NotherFormType[plants][" + position + "][name]", "input name");
+		equal(input.val(), value, "input value");
+	},
+	expectFieldVals = function(expected) {
+		QUnit.config.current.expected += 1;	// 1 assertion in here
+		var fieldDomElements = container._getExisting();
+		equal(fieldDomElements.length, expected.length, "no more fields than expected");
+		jQuery.each(expected, function(pos, name) {
+			assertStruct(fieldDomElements[pos], pos, name);
+		});
+	},
+	rmFieldByPos = function(pos) {
+		jQuery('a.rmElement', container._getExisting()[pos]).trigger("click");
+	};
 
-	equal(children.length, 1);
+	expectFieldVals(["Daisy"]);
+
+	// more fields
+	container.addField(); container.addField(); container.addField(); container.addField();
+	// adding some values as it's the only information not to be changed by code
+	jQuery.each(container._getExisting(), function(i, ele) {
+		if (testnames[i]) {
+			jQuery(jQuery(":input", ele)[0]).val(testnames[i]);
+		}
+	});
+
+	expectFieldVals(["Daisy", "Sunflower", "Strawberry", "Barley", "Pine"]);
+	rmFieldByPos(2);
+	expectFieldVals(["Daisy", "Sunflower", "Barley", "Pine"]);
+	rmFieldByPos(3);
+	expectFieldVals(["Daisy", "Sunflower", "Barley"]);
+	rmFieldByPos(0);
+	expectFieldVals(["Sunflower", "Barley"]);
+	container.addField();
+	expectFieldVals(["Sunflower", "Barley", ""]);
+	rmFieldByPos(0);
+	expectFieldVals(["Barley", ""]);
+	rmFieldByPos(1);
+	expectFieldVals(["Barley"]);
+	rmFieldByPos(0);
+	expectFieldVals([]);
+	container.addField();
+	expectFieldVals([""]);
+});
+
+// @todo test _getFieldHtml
+// @todo test _createField
+
+QUnit.test("add button added", 7, function() {
+	var dom = getFixture("formAnimals"),
+		containerDom = jQuery("*[data-prototype]", dom),
+		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
+
+	equal(container._getExisting().length, 1);
 
 	equal(jQuery("#MyFormType_animals + a.addPrototype", dom).length, 0);
 	var button = container._addAddButton();
 	var addButtons = jQuery("#MyFormType_animals + a.addPrototype", dom);
-	equal(addButtons.length, 1);
+	equal(addButtons.length, 1, "button added");
+	equal(button, addButtons[0], "where we expect it (next to [+] the container)");
 
-	equal(button, addButtons[0]);
 	var callbacks = jQuery._data(button, "events")["click"];
 	equal(callbacks.length, 1);
 
-	jQuery(button).trigger("click");
-
-	equal(container._getExisting().length, 2);
-});
-
-test("existing elements look like prototype generated ones", 2, function() {
-	var dom = jQuery(getFixture("formAnimals")),
-		containerDom = jQuery("*[data-prototype]", dom),
-		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
-
-	container._extendFields();
-	var button = container._addAddButton();
-
-	equal(container._getExisting().length, 1);
-
-	jQuery(button).trigger("click");
-
-	var existingAfter = container._getExisting().toArray();
-	equal(existingAfter.length, 2);
-
-	// @todo compare elements except for id, label, field name, ...
-	//deepEqual(existingAfter[0], existingAfter[1]);
-});
-
-test("add click emits event", 1, function() {
-	var dom = jQuery(getFixture("formAnimals")),
-		containerDom = jQuery("*[data-prototype]", dom),
-		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions),
-		button = container._addAddButton();
-
 	jQuery(container._container).on("prototype.added", function(event, cont) {
 		equal(cont, container);
-		start();
 	});
 
 	jQuery(button).trigger("click");
+
+	equal(container._getExisting().length, 2, "number of fields increased");
 });
 
-test("rm click emits event", 1, function() {
-	var dom = jQuery(getFixture("formAnimals")),
-		containerDom = jQuery("*[data-prototype]", dom),
-		container = new jQuery.fn.sfPrototypeMan.classes.SfPrototypeContainer(containerDom, jQuery.fn.sfPrototypeMan.defaultOptions);
-
-	container._extendFields();
-
-	var rmButton = jQuery("> a.rmElement", container._getExisting())[0];
-
-	jQuery(container._container).on("prototype.elementremoved", function(event, cont) {
-		equal(cont, container);
-	});
-
-	jQuery(rmButton).trigger("click");
-});
-
-test("listeners attached to container", 1, function() {
-	var dom = jQuery(getFixture("formAnimals")),
+QUnit.test("listeners attached to container", 1, function() {
+	var dom = getFixture("formAnimals"),
 		containerDom = jQuery("*[data-prototype]", dom),
 		options = jQuery.fn.sfPrototypeMan.defaultOptions;
 

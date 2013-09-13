@@ -83,6 +83,19 @@
 		},
 
 		/**
+		 * Add another (empty) field to the end of the collection
+		 *
+		 * @return void
+		 */
+		addField: function() {
+			var counter = this._getExisting().length,
+				newElement = this._createField(counter);
+			newElement.appendTo(this._container);
+
+			this._container.trigger("prototype.added", [this]);
+		},
+
+		/**
 		 * Get the instantiations of the prototype, that is sub-forms/fields
 		 *
 		 * @return jQuery
@@ -137,26 +150,12 @@
 			var	addMe = $(this._config.addButtonMarkup),
 				containerId = this._container.attr("id");
 			addMe.html(this._getText(this._config.addButtonText, { field: containerId }));
-			addMe.click($.proxy(this._addButtonCallback, this));
+			addMe.click($.proxy(function(event) {
+				event.preventDefault();
+				this.addField();
+			}, this));
 			addMe.insertAfter(this._container);
 			return addMe[0];	// returning the element, not the jQuery of it
-		},
-
-		/**
-		 * The callback performed when the "add button" is triggered
-		 *
-		 * @param {jQuery.Event} event The jQuery event
-		 *
-		 * @return void
-		 */
-		_addButtonCallback: function(event) {
-			event.preventDefault();
-
-			var counter = this._getExisting().length,
-				newElement = this._createField(counter);
-			newElement.appendTo(this._container);
-
-			this._container.trigger("prototype.added", [this]);
 		},
 
 		/**
@@ -169,11 +168,9 @@
 		_getFieldHtml: function(position) {
 			var html = this._container.data(this._config.prototypeDataKey);
 
-			html = html
+			return html
 				.replace(this._config.fieldLabelPattern, position)
 				.replace(this._config.fieldNamePattern, position);
-
-			return html;
 		},
 
 		/**

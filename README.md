@@ -22,8 +22,8 @@ By default all form parts detected to be "repeatable" as per the Symfony way of 
 Settings can be passed to sfPrototypeMan to override the *defaultOptions*, e.g.
 
     jQuery().sfPrototypeMan({
-    	addButtonText: 'Give me one more field',
-    	rmButtonText: '-'
+    	addButtonText: "Give me one more field",
+    	rmButtonText: "-"
     });
 
 ## Events

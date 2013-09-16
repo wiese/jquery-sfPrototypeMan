@@ -8,6 +8,12 @@ Include script *after* the jQuery library
 
     <script src="/path/to/jquery.sfprototypeman.js"></script>
 
+### Minified production version
+
+This project uses [Grunt](http://gruntjs.com/). If you build it, a minified version for production usage will be created at
+
+    build/jquery.sfprototypeman.min.js
+
 ## Usage
 
 Run
@@ -54,4 +60,5 @@ sfPrototypeMan emits the events *prototype.elementremoved* and *prototype.added*
 
 ## Todo
 
-* http://plugins.jquery.com/docs/publish/
+* bumping grunt-contrib-quint (ticket?) to >0.2.2 to get qunit >=1.10.0
+* more @todo in tests.js

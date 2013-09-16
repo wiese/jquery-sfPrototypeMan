@@ -20,11 +20,11 @@ module.exports = function (grunt) {
 		},
 		uglify: {
 			options: {
-				banner: "/*! <%= pkg.name %> v<%= pkg.version %> | <%= pkg.license %> */\n"
+				banner: "/*! <%= pkg.name %> v<%= pkg.version %> | <%= _.pluck(pkg.licenses, 'type').join(', ') %> */\n"
 			},
 			build: {
 				files: {
-					"build/jquery.sfprototypeman-<%= pkg.version %>.min.js": "jquery.sfprototypeman.js"
+					"build/jquery.sfprototypeman.min.js": "jquery.sfprototypeman.js"
 				}
 			}
 		},
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 		},
 		compare_size: {
 			files: [
-				"build/jquery.sfprototypeman-<%= pkg.version %>.min.js",
+				"build/jquery.sfprototypeman.min.js",
 				"jquery.sfprototypeman.js"
 			],
 			options: {

@@ -30,6 +30,7 @@
 		$(config.containerSelector, context).each(function() {
 			var container = new SfPrototypeContainer($(this), config);
 			container.applyExtensions();
+            container.applySizeConstraints();
 			containers.push(container);
 		});
 	};
@@ -41,6 +42,7 @@
 	SfPrototypeContainer = function(container, config) {
 		this._container = container;
 		this._config = config;
+        this._fieldConfig = {}
 
 		if (!this._container.jquery || this._container.length !== 1) {
 			throw "Container has to be _one_ jQuery extended element";
@@ -60,6 +62,23 @@
 			this._extendContainer();
 			this._extendFields();
 		},
+
+		applySizeConstraints: function() {
+            var data = this._container.data();
+            if (data.constrainedCollectionMinSize) {
+                this._fieldConfig.minSize = data.constrainedCollectionMinSize;
+            }
+            if (data.constrainedCollectionMaxSize) {
+                this._fieldConfig.maxSize = data.constrainedCollectionMaxSize;
+            }
+
+            if (this._fieldConfig.minSize){
+                var counter = this._getExisting().length;
+                for (var i = counter, l= this._fieldConfig.minSize; i<l; i++){
+                    this.addField();
+                }
+            }
+        },
 
 		/**
 		 * Notify the object that the order of existing children was changed
@@ -89,10 +108,26 @@
 		 */
 		addField: function() {
 			var counter = this._getExisting().length,
-				newElement = this._createField(counter);
-			newElement.appendTo(this._container);
-
-			this._container.trigger("prototype.added", [this]);
+                    	maxSize = this._fieldConfig.maxSize,
+                	 mustAppend = true;
+            
+			if (typeof maxSize != 'undefined') {
+				if (counter >= maxSize){
+					mustAppend = false;
+					this._container.trigger("prototype.maxsize-already-reached", [this]);
+				}
+			}
+	
+			if (mustAppend){
+				var newElement = this._createField(counter);
+				newElement.appendTo(this._container);
+				
+				this._container.trigger("prototype.added", [this]);
+				
+				if (maxSize && counter - maxSize == 1){
+					this._container.trigger("prototype.maxsize-reached", [this]);
+				}
+			}
 		},
 
 		/**

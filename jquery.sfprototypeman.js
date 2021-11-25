@@ -288,7 +288,7 @@
 			/**
 			 * jQuery UI Sortable Widget reorder callback - post DOM position change
 			 * @tutorial We omit the parameters 'event'&'ui' as we don't use them
-			 * @see http://api.jqueryui.com/sortable/#event-update
+			 * @see https://api.jqueryui.com/sortable/#event-update
 			 */
 			"sortupdate": function() {
 				this.orderChanged();
